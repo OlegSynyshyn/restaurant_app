@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+
+    {% if user.is_authenticated %}
+        <div class="alert alert-success text-center">
+            Ви увійшли як: <strong>{{ user.username }}</strong>
+        </div>
+    {% else %}
+        <div class="alert alert-warning text-center">
+            Ви не авторизовані.
+            <a href="{% url 'login' %}" class="alert-link">Увійти</a> /
+            <a href="{% url 'register' %}" class="alert-link">Реєстрація</a>
+        </div>
+    {% endif %}
+
+    <div class="dropdown text-center mb-4">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            {% if selected_category %}
+                {{ selected_category.name }}
+            {% else %}
+                Усі категорії
+            {% endif %}
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'home' %}">Усі</a></li>
+            {% for category in categories %}
+            <li><a class="dropdown-item" href="{% url 'home' %}?category={{ category.slug }}">{{ category.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+
+    <h2 class="mb-3 text-center">Популярні страви</h2>
+    <div class="row g-3 mb-5">
+        {% for dish in popular_dishes %}
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card shadow-sm h-100">
+                {% if dish.image %}
+                <img src="{{ dish.image.url }}" class="card-img-top">
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ dish.name }}</h5>
+                    <p class="card-text text-primary fw-bold">{{ dish.price }} грн</p>
+                    <button type="button" class="btn btn-outline-dark mb-2" data-bs-toggle="modal" data-bs-target="#dishModal{{ dish.id }}">Детальніше</button>
+                    <button class="btn btn-dark mt-auto" disabled>Додати в кошик</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="dishModal{{ dish.id }}" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ dish.name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        {% if dish.image %}
+                        <img src="{{ dish.image.url }}" class="img-fluid mb-3">
+                        {% endif %}
+                        <p><strong>Ціна:</strong> {{ dish.price }} грн</p>
+                        {% if dish.description %}<p>{{ dish.description }}</p>{% endif %}
+                        {% if dish.ingredients %}<p><strong>Інгредієнти:</strong> {{ dish.ingredients }}</p>{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% empty %}
+        <p class="text-muted">Популярних страв немає.</p>
+        {% endfor %}
+    </div>
+
+
+    <h2 class="mb-3 text-center">Нові страви</h2>
+    <div class="row g-3 mb-5">
+        {% for dish in new_dishes %}
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card shadow-sm h-100">
+                {% if dish.image %}
+                <img src="{{ dish.image.url }}" class="card-img-top">
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ dish.name }}</h5>
+                    <p class="card-text text-primary fw-bold">{{ dish.price }} грн</p>
+                    <button type="button" class="btn btn-outline-dark mb-2" data-bs-toggle="modal" data-bs-target="#dishModalNew{{ dish.id }}">Детальніше</button>
+                    <button class="btn btn-dark mt-auto" disabled>Додати в кошик</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="dishModalNew{{ dish.id }}" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ dish.name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        {% if dish.image %}
+                        <img src="{{ dish.image.url }}" class="img-fluid mb-3">
+                        {% endif %}
+                        <p><strong>Ціна:</strong> {{ dish.price }} грн</p>
+                        {% if dish.description %}<p>{{ dish.description }}</p>{% endif %}
+                        {% if dish.ingredients %}<p><strong>Інгредієнти:</strong> {{ dish.ingredients }}</p>{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% empty %}
+        <p class="text-muted">Нових страв немає.</p>
+        {% endfor %}
+    </div>
+
+
+    <h2 class="mb-3 text-center">{% if selected_category %}Усі страви ({{ selected_category.name }}){% else %}Усі страви{% endif %}</h2>
+    <div class="row g-3">
+        {% for dish in dishes %}
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card h-100 shadow-sm">
+                {% if dish.image %}
+                <img src="{{ dish.image.url }}" class="card-img-top">
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ dish.name }}</h5>
+                    <p class="card-text text-primary fw-bold">{{ dish.price }} грн</p>
+                    <button type="button" class="btn btn-outline-dark mb-2" data-bs-toggle="modal" data-bs-target="#dishModalAll{{ dish.id }}">Детальніше</button>
+                    <button class="btn btn-dark mt-auto" disabled>Додати в кошик</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="dishModalAll{{ dish.id }}" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ dish.name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        {% if dish.image %}
+                        <img src="{{ dish.image.url }}" class="img-fluid mb-3">
+                        {% endif %}
+                        <p><strong>Ціна:</strong> {{ dish.price }} грн</p>
+                        {% if dish.description %}<p>{{ dish.description }}</p>{% endif %}
+                        {% if dish.ingredients %}<p><strong>Інгредієнти:</strong> {{ dish.ingredients }}</p>{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% empty %}
+        <p class="text-muted">Страв немає.</p>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}
