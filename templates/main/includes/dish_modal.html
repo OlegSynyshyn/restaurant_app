@@ -1,0 +1,21 @@
+<div class="modal fade" id="dishModal{{ dish.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ dish.name }}</h5>
+            </div>
+            <div class="modal-body">
+                {% if dish.image %}
+                    <img src="{{ dish.image.url }}" class="img-fluid mb-3">
+                {% endif %}
+                <p><strong>Ціна:</strong> {{ dish.price }} грн</p>
+                {% if dish.description %}
+                    <p>{{ dish.description }}</p>
+                {% endif %}
+                {% if dish.ingredients %}
+                    <p><strong>Інгредієнти:</strong> {{ dish.ingredients }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,25 +1,68 @@
+{% load static %}
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
 
-        <a class="navbar-brand" href="{% url 'home' %}">Restaurant</a>
+        <a class="navbar-brand fw-bold" href="/">Ресторан</a>
 
-        <div class="collapse navbar-collapse">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainMenu">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Головна</a>
+                </li>
+
+            </ul>
+
             <ul class="navbar-nav ms-auto">
 
+         
+                <li class="nav-item me-3">
+                    <a class="nav-link position-relative" href="{% url 'cart_detail' %}">
+                        <i class="bi bi-cart3 fs-5"></i> Кошик
+                    </a>
+
+                </li>
+
+           
                 {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a href="{% url 'logout' %}" class="nav-link">Вийти</a>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> {{ user.username }}
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">Мій профіль</a></li>
+                            <li><a class="dropdown-item" href="#">Мої замовлення</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="{% url 'logout' %}">
+                                    Вийти
+                                </a>
+                            </li>
+                        </ul>
                     </li>
+
                 {% else %}
                     <li class="nav-item">
-                        <a href="{% url 'login' %}" class="nav-link">Увійти</a>
+                        <a class="nav-link" href="{% url 'login' %}">Увійти</a>
                     </li>
+
                     <li class="nav-item">
-                        <a href="{% url 'register' %}" class="nav-link">Реєстрація</a>
+                        <a class="nav-link btn btn-primary text-white px-3 ms-2"
+                           href="{% url 'register' %}">
+                            Реєстрація
+                        </a>
                     </li>
                 {% endif %}
 
             </ul>
         </div>
+
     </div>
 </nav>

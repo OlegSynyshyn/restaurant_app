@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+
+    <a href="{% url 'home' %}" class="btn btn-outline-primary mb-3">
+        ← На головну
+    </a>
+
+    <h2 class="mb-4">Кошик</h2>
+    {% if items %}
+        <div class="table-responsive mb-3">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Страва</th>
+                        <th>Ціна</th>
+                        <th>Кількість</th>
+                        <th>Вартість</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>
+                            <strong>{{ item.dish.name }}</strong><br>
+                            {% if item.dish.image %}
+                                <img src="{{ item.dish.image.url }}" alt="{{ item.dish.name }}" style="height:50px;">
+                            {% endif %}
+                        </td>
+                        <td>{{ item.dish.price }} грн</td>
+                        <td style="max-width: 120px;">
+                            <form method="post" action="{% url 'cart_update' item.id %}" class="d-flex">
+                                {% csrf_token %}
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="0" class="form-control form-control-sm me-2">
+                                <button type="submit" class="btn btn-sm btn-outline-primary">Оновити</button>
+                            </form>
+                        </td>
+                        <td>{{ item.get_total_price }} грн</td>
+                        <td>
+                            <form method="post" action="{% url 'cart_remove' item.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    Видалити
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-end mb-4">
+            <h4>Загальна сума: <strong>{{ total }} грн</strong></h4>
+        </div>
+
+        <div class="text-end">
+            <a href="#" class="btn btn-success" disabled>Оформити замовлення</a>
+        </div>
+    {% else %}
+        <p class="text-center text-muted">Кошик порожній.</p>
+    {% endif %}
+</div>
+{% endblock %}
