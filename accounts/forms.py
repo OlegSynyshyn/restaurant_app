@@ -27,3 +27,20 @@ class RegisterForm(UserCreationForm):
 
         self.fields['password1'].widget = forms.PasswordInput(attrs={'class': 'form-control mb-2'})
         self.fields['password2'].widget = forms.PasswordInput(attrs={'class': 'form-control mb-2'})
+
+
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+        labels = {
+            'first_name': 'Імʼя',
+            'last_name': 'Прізвище',
+            'email': 'Email',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control mb-2'})
