@@ -57,7 +57,10 @@
         </div>
 
         <div class="text-end">
-            <a href="#" class="btn btn-success" disabled>Оформити замовлення</a>
+            <a class="btn btn-success mt-3" href="{% url 'checkout' %}">
+                    Оформити замовлення
+            </a>
+
         </div>
     {% else %}
         <p class="text-center text-muted">Кошик порожній.</p>

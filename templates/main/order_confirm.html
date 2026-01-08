@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 800px;">
+    <h2 class="text-center mb-3">Замовлення підтверджено ✅</h2>
+    <p class="text-center text-muted">Номер замовлення: #{{ order.id }}</p>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <p><strong>Імʼя:</strong> {{ order.customer_name }}</p>
+            <p><strong>Телефон:</strong> {{ order.phone }}</p>
+            <p><strong>Адреса:</strong> {{ order.delivery_address }}</p>
+            <p><strong>Оплата:</strong> {{ order.get_payment_method_display }}</p>
+            {% if order.comment %}
+                <p><strong>Коментар:</strong> {{ order.comment }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <ul class="list-group mb-3">
+        {% for item in items %}
+        <li class="list-group-item d-flex justify-content-between">
+            {{ item.dish.name }} × {{ item.quantity }}
+            <span>{{ item.total_price }} грн</span>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h5 class="text-end mb-3">Разом: {{ total }} грн</h5>
+
+    <div class="text-center">
+        <a href="{% url 'home' %}" class="btn btn-primary">На головну</a>
+    </div>
+</div>
+{% endblock %}

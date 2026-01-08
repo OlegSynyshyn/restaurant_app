@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import Category, Dish, Cart, CartItem
+from .models import Category, Dish, Cart, CartItem, Order, OrderItem
+
 
 
 def home(request):
@@ -105,3 +106,63 @@ def cart_remove(request, item_id):
         item.delete()
 
     return redirect("cart_detail")
+
+
+
+def checkout(request):
+    cart = get_cart(request)
+    items = CartItem.objects.filter(cart=cart).select_related("dish")
+
+    if not items.exists():
+        return redirect("cart_detail")
+
+    if request.method == "POST":
+        customer_name = request.POST.get("customer_name")
+        phone = request.POST.get("phone")
+        delivery_address = request.POST.get("delivery_address")
+        payment_method = request.POST.get("payment_method")
+        comment = request.POST.get("comment")
+
+        order = Order.objects.create(
+            user=request.user if request.user.is_authenticated else None,
+            customer_name=customer_name,
+            phone=phone,
+            delivery_address=delivery_address,
+            payment_method=payment_method,
+            comment=comment,
+        )
+
+        for item in items:
+            OrderItem.objects.create(
+                order=order,
+                dish=item.dish,
+                price=item.dish.price,
+                quantity=item.quantity,
+            )
+
+        items.delete()
+        cart.is_active = False
+        cart.save()
+
+        return redirect("order_confirm", order_id=order.id)
+
+    total = cart.get_total_price()
+    return render(request, "main/checkout.html", {
+        "items": items,
+        "total": total,
+    })
+
+
+def order_confirm(request, order_id):
+    order = Order.objects.filter(id=order_id).first()
+    if not order:
+        return redirect("home")
+
+    items = order.items.select_related("dish")
+    total = order.get_total_price()
+
+    return render(request, "main/order_confirm.html", {
+        "order": order,
+        "items": items,
+        "total": total,
+    })
